@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>游戏测试</title>
+<style type="text/css">
+	*{margin:0; padding:0}
+	body{background:#000}
+	button{padding:3px 5px}
+	.left{float:left}
+	.right{float:right}
+	.red{background-color:#C00}
+	.blue{background-color:#00C}
+	#container{width:1000px; height:800px; margin:auto; position:relative}
+	.healthy{width:400px; height:20px; border:1px solid #ccc; color:#fff; font-size:12px; line-height:20px}
+	
+	#lefthealthy{text-align:right; position:relative}
+	#righthealthy{text-align:left; position:relative}
+	
+	#screen{width:500px; height:200px; background:#000; border:1px solid #ccc; padding:2px; margin:auto;left:250px; top:500px; position:absolute; overflow-y:scroll}
+	.fontspan{position:absolute}
+	#lefthealthy .fontspan{right:0}
+	#righthealthy .fontspan{left:0}
+	#me{width:100px; height:200px; border:1px solid #ccc; position:relative; top:25px}
+	#pic{width:50px; height:50px; padding:0}
+	#meattr{color:#f0f0f0; font-size:12px}
+	#meattr ul{padding-left:5px}
+	#meattr ul li{list-style:none}
+	#screen p{font-size:12px; line-height:16px}
+	#screen .fontw{color:#ccc}
+	#screen .fontred{color:#C00}
+	#screen .fontblue{color:#30F}
+	#screen .fontwb{color:#36F}
+	#screen .fontwr{color:#9FF}
+	#screen .fontyellow{color:#F93}
+	
+	#Interface{width:1000px; height:80px; border:1px solid red; margin:auto; position:absolute; top:400px}
+	.healnum{height:100%; width:54%}
+</style>
+</head>
+
+<body>
+	<div id="container">
+    	<div id="healthy">
+        	<div id="lefthealthy" class="healthy left">
+				<span class="fontspan right">1234</span>
+            	<div class="healnum red left"></div>
+            </div>
+            <div id="righthealthy" class="healthy right">
+            	<span class="fontspan left">1234</span>
+            	<div class="healnum blue right"></div>
+            </div>
+        </div>
+        <div id="me">
+        	<div id="pic"><img src="images/pic.jpg" /></div>
+            <div id="meattr">
+            	<ul>
+                	<li>等级:<span id="level">1</span></li>
+                	<li>血量:<span id="attrheal">100</span></li>
+                    <li>魔法:<span id="mana">80</span></li>
+                    <li>经验:<span id="exp">0</span></li>
+                    <li>金币:<span id="gold">0</span></li>
+                </ul>
+            </div>
+        </div>
+        <div id="Interface">
+        	<div id="buttons">
+            	<button id="start">开始战斗</button>
+                <button id="reset">重置战斗</button>
+                <button id="deletep">删除第一个元素</button>
+                <input type="text" id="msg"  />
+                <select id="area">
+					<option value="2000000">艾尔文森林</option>
+                    <option value="2000001">时光之穴</option>
+                </select>
+                <button id="charea">切换地图</button>
+            </div>
+        </div>
+        <div id="screen">
+        	<p class="fontw">你对王友卓造成了300点伤害</p>
+            <p class="fontyellow">你杀死了XX</p>
+            <p class="fontw">获得了200金钱</p>
+            <p class="fontred">你完成了一次双杀</p>
+            <p class="fontw">获得了200金钱</p>
+            <p class="fontblue">你完成了一次三杀</p>
+            <p class="fontw">获得了200金钱</p>
+            <p class="fontwb">你完成了一次疯狂杀戮</p>
+            <p class="fontw">获得了200金钱</p>
+            <p class="fontwr">你正在暴走</p>
+            <p class="fontw">获得了200金钱</p>
+            
+        </div>
+    </div>
+</body>
+</html>
+<script src="/js/jquery-1.7.1.min.js"></script>
+<script src="/js/game.screen.js"></script>
+<script src="/js/game.app.js"></script>
+
+<script>
+	function Application() {
+		return {
+			Process : function(msg) {
+				alert(msg);
+			}
+		}
+	}
+	var App = new Application();
+	$(document).ready(function(){
+		var redHealthy = $("#lefthealthy .healnum");
+		var blueHealthy = $("#righthealthy .healnum");
+		window.setInterval(function(){
+			var rand = Math.floor(Math.random() * 100);
+//			var rand = 99;
+				redHealthy.width(rand+'%');
+				blueHealthy.width(rand+'%');
+			}, 1000);
+		var Fight = 0;
+		var msg = $("#msg");
+
+		function send(){
+			$.post('/?a=recv',{type:$.trim($(msg).val())}, function(m){
+				if(m.length > 0) {
+					Game.msg(m);
+				}
+//				$("#screen").append('<p class="fontw">'+m.type+'</p>');
+			}, 'JSON');
+		}
+		var gamestatus = 0;
+		function GameStart() {
+			if(gamestatus > 0) {
+				return;
+			}
+			gamestatus = 1;
+			Fight = window.setInterval(send, 3000);
+			$("#reset").click(function(){
+				window.clearInterval(Fight);
+				gamestatus = 0;
+			});
+		}
+		$("#start").click(GameStart);
+/*		$("#start").click(function(){
+			var screen = $("#screen");
+			$.post('/?a=fight', {}, function(data){
+				for(var i = 0; i < data.length; i++) {
+					for(var j = 0; j < data[i].length; j++) {
+						if(data[i][j].type == 'damage') {
+							screen.append('<p class="fontw">'+data[i][j].from+'对'+data[i][j].to+'造成了'+data[i][j].damage+'点伤害</p>');
+						}
+						else if(data[i][j].type == 'changetarget') {
+							screen.append('<p class="fontyellow">'+data[i][j].from+'开始攻击'+data[i][j].to+'</p>');
+						}
+						else if(data[i][j].type == 'death') {
+							screen.append('<p class="fontred">'+data[i][j].from+'死亡了'+'</p>');
+						}
+					}
+					screen.scrollTop(500);
+				}
+			}, 'json');
+			Fight = GameStart();
+		});*/
+		
+		$("#deletep").click(function(){
+			var a = $("#screen").find("p").eq(0).remove();
+		});
+		$("#charea").click(function(){
+			var area = $("#area").val();
+			Game.PlayerEvents.charea(area);
+		});
+	});
+</script>
