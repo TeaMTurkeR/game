@@ -303,11 +303,11 @@ class Player extends Fighter {
         $m->tbl_name = 'wow_player';
 			
         $info = array(
-            'hp'	=> $this->hp,
-            'mp'	=> $this->mp,
-            'gold'	=> $this->gold,
-            'attack' => $this->damage,
-            'exp'	=> intval($this->exp)
+                      'hp'	=> $this->hp,
+                      'mp'	=> $this->mp,
+                      'gold'	=> $this->gold,
+                      'attack' => $this->damage,
+                      'exp'	=> intval($this->exp)
                       );
         $attr = serialize($info);
         $m->update(array('uid' => $this->uid), array('attribute' => $attr));
@@ -315,15 +315,15 @@ class Player extends Fighter {
 		
     function fight($data) {
         return array(
-            array('type' => 'fight', 'damage' => rand(100, 200)),
-            array('type' => 'exprnum', 'expr' => rand(100, 200)),
+                     array('type' => 'fight', 'damage' => rand(100, 200)),
+                     array('type' => 'exprnum', 'expr' => rand(100, 200)),
                      );
     }
 		
     function sell($data) {
         return array(
-            array('type' => 'sell', 'gold' => rand(10, 20)),
-            array('type' => 'mygold', 'gold' => 5988)
+                     array('type' => 'sell', 'gold' => rand(10, 20)),
+                     array('type' => 'mygold', 'gold' => 5988)
                      );
     }
 		
@@ -336,13 +336,13 @@ class Player extends Fighter {
         $area = $m->get($data);
         if (empty($area)) {
             return array(
-                array('type' => 'charea', 'name' => '未知地区', 'areaid' => $data)
+                         array('type' => 'charea', 'name' => '未知地区', 'areaid' => $data)
                          );
         }
 
         $_SESSION['areaid'] = $data;
         return array(
-            array('type' => 'charea', 'name' => $area['name'], 'areaid' => $area['areaid'])
+                     array('type' => 'charea', 'name' => $area['name'], 'areaid' => $area['areaid'])
                      );
     }
 }

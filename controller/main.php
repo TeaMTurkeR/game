@@ -86,6 +86,10 @@ class main extends spController {
 		$this->display('index.html');
 	}
 	
+    function map() {
+        $this->display('map.html');
+    }
+
 	function fight() {
 		import('Fighter.php');
 		$fighting = new Fighting();
