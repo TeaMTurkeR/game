@@ -10,7 +10,7 @@
  */
 
 return array(
-	'mode' => 'debug', // 应用程序模式，默认为调试模式
+	'mode' => '', // 应用程序模式，默认为调试模式
 	'sp_core_path' => SP_PATH.'/Core', // 框架MVC核心目录
 	'sp_drivers_path' => SP_PATH.'/Drivers', // 框架各类驱动文件目录
 	'sp_include_path' => array( SP_PATH.'/Extensions' ), // 框架扩展功能载入路径
